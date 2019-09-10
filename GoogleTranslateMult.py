@@ -14,7 +14,12 @@ base_url = 'https://translate.google.com/translate_a/single' \
            '&q={2}'
 
 
-def readFileToList(path):
+def read_file_to_list(path):
+    '''
+    读取文本内容并存到list里
+    :param path:文件路径
+    :return: list
+    '''
     with open(path) as fp:
         content = fp.readlines()
     list = [x.strip() for x in content]
@@ -22,7 +27,12 @@ def readFileToList(path):
 
 
 def get_content_list(path):
-    content_list = readFileToList(path)
+    '''
+    获取要翻译的list内容
+    :param path: 文件路径
+    :return: list
+    '''
+    content_list = read_file_to_list(path)
     len1 = len(content_list)
     c_content_list = []
     for i in range(0, len1 - 1):
@@ -31,12 +41,17 @@ def get_content_list(path):
 
 
 def get_tk(path):
-    content_list = readFileToList(path)
+    '''
+    获取tk的参数值,tk的参数值位于文本的最后一行
+    :param path: 路径
+    :return: tk的参数值
+    '''
+    content_list = read_file_to_list(path)
     len1 = len(content_list)
     return content_list[len1 - 1]
 
 
-def getTranslateJsonStr(source_country, target_country, content_list, tk):
+def get_translate_result(source_country, target_country, content_list, tk):
     '''
     :param source_country: 翻译前的语言
     :param target_country: 翻译后的语言
@@ -46,12 +61,8 @@ def getTranslateJsonStr(source_country, target_country, content_list, tk):
 
     content = '\n'.join(str(e) for e in content_list)
     URL = base_url.format(source_country, target_country, content, tk)
-    # print 'URL->', URL
-    # sending get request and saving the response as response object
     json_result = requests.get(url=URL)
-    # extracting data in json format
     data = json_result.json()
-    # print 'data->', data
     result = []
     print source_country, '-------------->', target_country
     for i in range(0, len(content_list)):
@@ -77,11 +88,10 @@ if __name__ == '__main__':
         row.value = country_list[i]
 
     for i in range(0, len_count):
-        result = getTranslateJsonStr(Country.Country.ChinaSimple, country_list[i], content_list, tk)
+        result = get_translate_result(Country.Country.ChinaSimple, country_list[i], content_list, tk)
         for j in range(0, len(result)):
-            index = chr(65+i) + str(2+j)
+            index = chr(65 + i) + str(2 + j)
             row = ws[index]
             row.value = result[j]
-
 
     wb.save('translate_google_' + _date + '.xlsx')
