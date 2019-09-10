@@ -18,7 +18,7 @@
 
 若需要修改翻译的国家以及execl的国家排版顺序，请修改Country.py
 
-##示例图片
+## 示例图片
 
 ![demo](demo.png "demo")
 
